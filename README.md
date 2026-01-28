@@ -8,9 +8,9 @@ Configurare l'addon per Home Assistnat HA-SIP perchè si connetta al Provider it
 
 Visto quanto ho dovuto sbattere letteralmente la testa per far funzionare questo ADDON con il Provider italiano WindTre, ho deciso di scrivere questa guida per semplificare la vita a chi si vuole cimentare.
 
-La necessità di avere un SIP funzionante è nata quando ho configurato la mia casa domotica con dei sensori di rilevamento acqua. Ijn precedenza l'unico mezzo di notifica che avevo configurato erano le notifiche attraverso Telegram e quelle in-app. Tuttavia, ho avuto dei problemi con la lavatrice e il sistema, funzionando correttamente, mi ha inviato i messaggi giusti, che però non ho visto perchè il telefono era in tasca. Quando ho rilevato il danno il mio pensiero è stato "se mi avesse telefonato magari l'avrei sentito!". Inoltre, problema simile ho pensato si sarebbe potuto verificare con lo scattare di un allarme intrusione. Insomma... volevo che in caso di alcuni "eventi" gravi il sistema non si limitasse a mandarmi un messaggio Telegrma o una banale notifica in-app, ma mi chiamasse con una cavolo di suoneria da "fine del modo" da un numero che potessi aver salvato sulla mia rubrica come "ALLARME CASA" o qualcosa che richiamasse la mia attenzione.
+La necessità di avere un SIP funzionante è nata quando ho configurato la mia casa domotica con dei sensori di rilevamento acqua. In precedenza, l'unico mezzo di notifica che avevo configurato erano le notifiche attraverso Telegram e quelle in-app. Tuttavia, ho avuto dei problemi con la lavatrice e il sistema, funzionando correttamente, mi ha inviato i messaggi giusti, che però non ho notato. Quando ho rilevato il danno il mio pensiero è stato "se mi avesse telefonato magari l'avrei sentito!". Inoltre, problema simile ho pensato si sarebbe potuto verificare con lo scattare di un allarme di intrusione. Insomma... volevo che, in caso di alcuni "eventi" gravi, il sistema non si limitasse a mandarmi un messaggio Telegrma o una banale notifica in-app, ma mi chiamasse con una cavolo di suoneria da "fine del modo" da un numero che potessi aver salvato sulla mia rubrica come "ALLARME CASA" o qualcosa che richiamasse la mia attenzione.
 
-Bhè il Provider WindTre assegna una numeraizione fissa ad ogni contratto internet che stipula che di solito è preconfigurata all'intenro del router che fornisce in fase di installazione.
+Bhè il Provider WindTre assegna una numerazione fissa ad ogni contratto internet che stipula, che di solito è preconfigurata all'intenro del router che fornisce in fase di installazione.
 
 Da buon smanettone, il mio router, per scelta personale, non è quello originale di WindTre, ma ho preferito acquistarne uno mio le cui caratteristiche fossero da me scelte e non imposte dal provider. Naturalmente questo router non ha la possibilità di configurare un Voip al suo interno, ma bisogna farlo esternamente. 
 
@@ -22,10 +22,10 @@ Per poter effettuare chiamate Voip con la propria numerazione esistono tre strad
 
 # SI INIZIA!
 
-Veniamo al dunque, ecco i passaggi da fare:
+Veniamo al dunque... ecco i passaggi da fare:
 
 1. Contattare il Provider WindTre:
-    Per prima cosa bisogna contattare il servizio clienti WindTre (159) per farsi dare i parametri di configurazione del proprio account Voip. il centralinista che risponderà non ve li fornirà subito, non li sanno neanche loro, ma verrete ricontattati a distanza di circa 2/3 giorni da un tecnico che vi dirà A VOCE quello che vi serve.
+    Per prima cosa bisogna contattare il servizio clienti WindTre (159) per farsi dare i parametri di configurazione del proprio account Voip. Il centralinista che risponderà non ve li fornirà subito, non li sanno neanche loro, ma verrete ricontattati a distanza di circa 2/3 giorni da un tecnico che vi dirà **A VOCE** quello che vi serve.
     In realtà quello che vi serve da loro è solo un parametro, gli altri sono standard e sono:
     1. il dominio (o realm): windtre.it
     2. il proxy SIP da utilizzare (uguale per tutti): voip.windtre.it
@@ -33,7 +33,7 @@ Veniamo al dunque, ecco i passaggi da fare:
     4. la password del Voip: questa ve la danno loro e solo loro la conoscono. (in realtà ho trovato una guida su come estrarla dal router originale windtre, ma per favore... ve la comunicano... non serve fare analisi forensi su hardware strano) ma se vi volete cimentare... google vi può aiutare....  
 
 2. scelta del software da utilizzare:
-    per la mia configurazione ho scelto [HA-Sip](https://github.com/arnonym/ha-plugins), ne esistono altri, tipo asterisk per home assistnat... ma è troppo importante.... sarebbe utilizzare un carro armato per andare a fare la spesa.... ma potrebbe essere decisiva come scelta se vogliamo creare un centralino telefonico con diversi interni.... non è il mio caso... io voglio ricevere una telefonata se scatta un allarme, non trasformare la mia domotica in un centralino di Nuova Delhi.  
+    per la mia configurazione ho scelto [HA-Sip](https://github.com/arnonym/ha-plugins), ne esistono altri, tipo asterisk per home assistnat... ma è troppo importante.... sarebbe come utilizzare un carro armato per andare a fare la spesa.... ma potrebbe essere decisiva come scelta se vogliamo creare un centralino telefonico con diversi interni.... non è il mio caso... io voglio ricevere una telefonata se scatta un allarme, non trasformare la mia domotica in un centralino di Nuova Delhi.  
 
 3. configurare il software:
     ed ecco la parte che non troverete da nessuna parte (3 settimane di ricerche e motivo di questa guida).  
@@ -44,18 +44,18 @@ Veniamo al dunque, ecco i passaggi da fare:
     log_level   5  
     name_server     (lasciate in bianco così prende i DNS di windtre - fondamentali per il funzionamento)  
     cache_dir   /config/audio_cache
-    global_options  --stun-server stun3.l.google.com:3478 --tcp disable (lo stun server è importante per ricevere l'audio altrimenti si connette, vi chiama ma non sentirete nulla, mentre il TCP disable è fondamentale per instaurare la chiamata, se non lo mettete il plugin farà una chiamata TCP e il provider "dropperà" la chiamata)  
+    global_options  --stun-server stun3.l.google.com:3478 --tcp disable (lo stun server è importante per ricevere l'audio altrimenti si connette, vi chiama ma alla risposta non sentirete nulla; mentre il TCP disable è fondamentale per instaurare la chiamata, se non lo mettete il plugin farà una chiamata TCP e il provider "dropperà" la chiamata: vuole solo UDP!)  
 
     PARAMETRI DELLA SEZIONE sip  
     sip enabled  
     registrar_uri   sip:windtre.it  
-    id_uri  sip:39041555666@windtre.it  
+    id_uri  sip:39041555666@windtre.it  (senza il +)
     realm   *   (non serve scrivere nulla... lo prende in automatico, tuttavia per la precisone andrebbe windtre.it)  
     user_name   39041555666  
     password    ABC123  
     answer_mode  listen  
-    settle_time     3  
-    incoming_call_file  /config/HA-Sip/sip-1-incoming.yaml (in questo file potrete inserire i parametri nel caso vogliate configurare delle risposte automatiche, del tipo "inserisci una pasword" e utilizzare i toni DTMF o altro...)  
+    settle_time     3  (sarebbero i secondi che attende dalla risposta a quando il TTS inizia a leggervi il messaggio)
+    incoming_call_file  /config/HA-Sip/sip-1-incoming.yaml (in questo file potrete inserire i parametri nel caso vogliate configurare delle risposte automatiche, del tipo "inserisci un PIN", utilizzare i toni DTMF o altro...)  
     options --proxy sip:39041555666@voip.windtre.it (se vi da errore 407 è perchè non avete disabilitato il TCP o lo STUN non funziona... provatene un altro - vedi sezione sip_global)  
 
     PARAMETRI DELLA SEZIONE tts  
@@ -80,7 +80,7 @@ Veniamo al dunque, ecco i passaggi da fare:
         language: "it-IT"
 ```
 
-**ATTENZIONE!!!!!!!** il plugin dà la possibilità di poter far rispondere il sistema solo se riceve una chiamata da un determitato numero o di rispondere a chiamate da tutti i numeri tranne che alcuni, una sorta di firewall delle chiamate. 
+**ATTENZIONE!!!!!!!** il plugin dà la possibilità di poter far rispondere il sistema solo se riceve una chiamata da un determitato numero o di rispondere a chiamate da tutti i numeri tranne alcuni, una sorta di firewall delle chiamate. 
 NON FUNZIONA!!!! ma non perchè il plugin ha errori, ma perchè la WINDTRE oscura i numeri chiamanti. Per poter ricevere il numero in chiaro è necessario attivare col provider l'opzione a pagamento IN VISTA... Lazzaroni!!
 
 
